@@ -1,0 +1,82 @@
+@@+Skills System
+@@
+@@Made for ___ MUSH
+@@
+@@By Violeta Nascha aka Cipher
+
+@@ Mechanical Engineering(skill_mechengr)
+@@ Electronics(skill_electronics)
+@@ Computer(skill_computer)
+@@ Medical(skill_medical)
+@@ Military(skill_military)
+@@ Surveillance(skill_surveillance)
+@@ Thievery(skill_thievery)
+@@ Cyberspace(skill_cyberspace)
+@@ Construction(skill_construction)
+@@ Skill Points(SP - skill_points)
+
+@attribute/access skill_mechengr=wizard
+@attribute/access skill_electronics=wizard
+@attribute/access skill_computer=wizard
+@attribute/access skill_medical=wizard
+@attribute/access skill_military=wizard
+@attribute/access skill_surveillance=wizard
+@attribute/access skill_thievery=wizard
+@attribute/access skill_cyberspace=wizard
+@attribute/access skill_construction=wizard
+@attribute/access skill_points=wizard
+@attribute/limit skill_mechengr=^\\d+$
+@attribute/limit skill_electronics=^\\d+$
+@attribute/limit skill_computer=^\\d+$
+@attribute/limit skill_medical=^\\d+$
+@attribute/limit skill_military=^\\d+$
+@attribute/limit skill_surveillance=^\\d+$
+@attribute/limit skill_thievery=^\\d+$
+@attribute/limit skill_cyberspace=^\\d+$
+@attribute/limit skill_construction=^\\d+$
+@attribute/limit skill_points=^\\d+$
+
+@@ Starting point for every character to inherit before they go through chargen
+
+@wipe #3/skill_mechengr
+@wipe #3/skill_electronics 
+@wipe #3/skill_computer 
+@wipe #3/skill_medical 
+@wipe #3/skill_military 
+@wipe #3/skill_surveillance 
+@wipe #3/skill_thievery 
+@wipe #3/skill_cyberspace 
+@wipe #3/skill_construction 
+
+@@ Current Skills Object dbref: #152
+
+@set #152=!NO_COMMAND WIZARD
+
+&skills-cmd-base #152=$+skills:@pemit %#= if(t([setq(0,[setdiff(lattr(#152/skill`*),lattr(%#/skill`*))])]),Dickass,Assballs)
+
+@@ Add skill command; %0 is the proper skill name, %1 is the name for the attribute tree. %2 is the skill descriptor.
+
+&skills-cmd-addskill #152=$+skills/addskill */*=*: @pemit %#=if(hasflag(%#,WIZARD),[attrib_set(#152/skill`%1,%0)][attrib_set(#152/skill`%1`desc,%2)][pemit(%#,<SKILL_SYS> Skill '%0' has been added.%r%r<SKILL_SYS> Copy and paste @attribute/access skill-%1=wizard   and   @attribute/limit skill-%1=^\\d+$   to finish setup.)],ufun(#147/error-list))
+
+@@ This command exists as a listing for players to see how much SP they have invested in any skill, as well as how many(if any) they have available to spend.
+
+
+
+
+
+
+
+&skills-cmd-base #152=$+skills:@pemit %#=if(and(filter(#152/skills-setfilter,,+[center(,78,=)]+%r[center(*< Epic skills text rawr >*,80,)]%r+[center(,78,=)+]%r%r[iter([lattr(%#/skill-*)], [ufun(%#/skill-%0`%1)]: [ufun(%#/skill-%0`basepoints)])]%r,[attrib_set(%#/[filter(#152/skills-setfilter, [lattr(%#/skill-*,\,)],\,)]`basepoints=0)][pemit(%#,Configuring attributes...%r%rAssigning SP...%r%r%r%r%rwololo%r%r%r%r%r... Skills system has been setup! Type +skills again to get a view of what skills can be learned\, and how many skill points you have.)])
+
+&skills-cmd-base #152=$+skills:@pemit %#=if(t(filter(#152/skills-setfilter, lattr(#152/ skill-*))),---,fuck)
+
+
+@@ Add skill command; %0 is the proper skill name, %1 is the attribute affix. %2 is the skill descriptor.
+
+&skills-cmd-addskill #152=$+skills/addskill */*=*: @pemit %#=if(hasflag(%#,WIZARD),[attrib_set(#152/skill-%1,%0)][attrib_set(#152/skilldesc-%1,%2)][pemit(%#,<SKILL_SYS> Skill '%0' has been added.%r%r<SKILL_SYS> Copy and paste @attribute/access skill-%1=wizard   and   @attribute/limit skill-%1=^\\d+$   to finish setup.)],ufun(#147/error-list))
+
+&skills-cmd-displaybase #152=$+skills *: @pemit %#=[setq(0,%0)][if([filter(#152/skills-filter, [lattr(%#/skill-*,\,)],\,)],fuck,BITCH)]
+
+&skills-filter #152=hasattr(%#, skill-%0)
+
+&skills-setfilter #152=hasattr(%#, %0)

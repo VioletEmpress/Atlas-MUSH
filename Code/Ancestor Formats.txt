@@ -1,0 +1,23 @@
+@@ Formats for ancestor objects
+@@
+@@ This way your MUSH actually looks halfway decent
+@@
+@@ Assumes your dbrefs for ancestor objects are as listed in comments, if not edit to taste
+@@
+@@ By Violeta Nascha aka Cipher
+
+@@ Ancestor Room #10
+
+@nameformat #10=%b%b[center(,76,_)]%r%b/[center(moniker(%0)[if(orlflags(%#,STAFF WIZARD ROYALTY JUDGE),%b\(%0\),)],76,)]\\%r/[center(\([name(zone(%0))]\),78,)]\\%r[repeat(=,80)]
+
+@descformat #10=/[center(,78,=)]\\%r[align(1 74 1,,%0%r%r,,,|%b)]
+
+@@Player_prepend*: An alternative to 'You see' in the beginning of the player list. Setting multiple player prepends allows the game to possibly switch between the different ones such as 'there are' or 'around you, you see', etc.
+
+@@Player_append*: Does the same as player_prepend but on the other end of the list.
+
+@conformat #10=[setq(0,room(%#))][align(1 74 1,,[if(hasattr([room(%#)],player_prepend0),xget([room(%#)],[pickrand(lattr([room(%#)]/player_prepend*))])%b,You see%b)][if(lcon(%q0,player),[iter(setr(0, shuffle(lvplayers(%q0))), moniker(%i0)[if(orlflags(%#,STAFF WIZARD ROYALTY JUDGE),%b\(%i0\),)],,\,%b)][if(hasattr([room(%#)],player_append0),xget([room(%#)],[pickrand(lattr([room(%#)]/player_apppend*))])%b,%bstanding around.)],no one around.)]%r%r[setq(0,room(%#))][if(hasattr([room(%#)],object_prepend0),xget([room(%#)],[pickrand(lattr([room(%#)]/object_prepend*))])%b,You see%b)][if(lthings(%q0),[iter(setr(0, shuffle(lthings(%q0))), moniker(%i0)[if(orlflags(%#,STAFF WIZARD ROYALTY JUDGE),%b\(%i0\),)],,\,%b)][if(hasattr([room(%#)]object_append0),xget([room(%#)],[pickrand(lattr([room(%#)]/object_append*))])%b,%bin the area.)],nothing else that stands out.)],,,|%b)]%r\\[center(,78,=)]/
+
+@@Exit_prepend and append: Same as player versions.
+
+@exitformat #10=[setq(0,room(%#))]%b[repeat(=,78)]%r[align(1 74 1,,[if(lvexits(%q0),[if(hasattr([room(%#)],exit_prepend0),xget([room(%#)],[pickrand(lattr([room(%#)]/exit_prepend*,))])%b,You see exits to%b)][iter(setr(0,shuffle(lvexits(%q0))), moniker(%i0)[if(orlflags(%#,STAFF WIZARD ROYALTY JUDGE),%b\(%i0\),)],,\,%b)][if(hasattr([room(%#)],exit_append0),xget([room(%#)],[pickrand(lattr([room(%#)]/exit_append*,))])%b,You see exits to%b)]%r%r,There's no way to get out of here!%r%r)],,,|%b)]%r%b\\[center(put something neat here later,75,)]/%r%b%b[center(,75,=)]
