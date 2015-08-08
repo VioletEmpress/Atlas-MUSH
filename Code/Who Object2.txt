@@ -1,8 +1,0 @@
-@@Who/Where
-@@By Violeta Nascha aka Cipher, 2014
-@@
-@@+who and +where commands designed for ___ MUSH.
-
-&who-cmd #148=$+who:@pemit %#=\\[center(,78,=)/%r[center(=>%bWho%b<=,80,\\/,/\\)]%r\\[center(,78,=)/%r[align(25 15 5 5 30, Player%r[iter(setr(0, lwho(%#)), moniker(%i0),,%r)], Alias%r[iter(%q0, alias(%i0),,%r)], Idle%r[iter(%q0, etime(idle(%i0),5),,%r)], OnFor%r[iter(%q0, etime(conn(%i0),5),,%r)], Room%r[iter(%q0, name(room(%i0)),,%r)],,|)]%r+[center(<%b[time(UTC)]%b>,78,=)+]
-
-&where-cmd #148=$+where:@pemit %#=<+[center(<%bWhere%b>,76,=)]+>%r[align(50 30, Players%r[iter(setr(0, lwho(%#)), moniker(%i0),,%b)], Room%r[iter(%q0, name(room(%i0)),,%r)])]
