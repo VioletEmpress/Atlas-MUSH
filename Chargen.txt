@@ -30,3 +30,21 @@
 @set #123=WIZARD HEAVY UNFINDABLE DARK
 @lock/basic #123=#123
 @lock/enter #123=#123
+
+@@ Code for homunculus (#121) Shadowy Homunculus (#118)
+
+@desc #118=[ufun(#151/sub-character`races`homunculi)]
+@listen #118=* has arrived.
+@ahear #118=[attrib_set(%#/race,Homunculus)]
+@set #118=WIZARD HEAVY UNFINDABLE DARK
+@lock/basic #118=#118
+@lock/enter #118=#118
+
+@@ Code for homunculus (#120) Shadowy Riph (#117)
+
+@desc #117=[ufun(#151/sub-character`races`riphs)]
+@listen #117=* has arrived.
+@ahear #117=[attrib_set(%#/race,Riph)]
+@set #117=WIZARD HEAVY UNFINDABLE DARK
+@lock/basic #117=#117
+@lock/enter #117=#117
