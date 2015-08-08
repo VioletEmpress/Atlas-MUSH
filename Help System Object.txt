@@ -1,0 +1,81 @@
+@@ +Help System Object
+@@
+@@ A categorized +help system for ___ MUSH
+@@
+@@ By Violeta Nascha aka Cipher
+
+@@ Begin public help command
+
+@@ Passed into from help index, gets file name, provides spacing between each listed help topic
+ 
+&HELP-INDEXLIST #151=xget(#151, %0)%b%b%b%b%b
+
+@@ Passed into from subhelp list, gets file name, provides spacing between each listed subfile
+
+&HELP-SUBLIST #151=xget(#151, %0)%b%b%b%b%b
+
+@@ 'Index' command; categories are manually added via center() code currently. Fetches every helpfile in the category's attribute tree(looks for the NAME attribute set by the add* commands) and lists it under the proper category.
+
+&HELP-INDEX-CMD #151=$+help:@pemit %#= /[center(,78,=)]\\%r|[center(*<%b[mudname()] Help Files%b>*,78,-)]|%r\\[center(,78,=)]/%r%b%b%b%b[center(*>%bCharacter Help%b<*,72,-)]%r[align(-80,[map(#151/HELP-INDEXLIST, [lattr(#151/MAIN-CHARACTER`*`NAME)])])]%r%b%b%b%b[center(*>%bRoleplaying Help%b<*,72,-)]%r[align(80,[map(#151/HELP-INDEXLIST, [lattr(#151/MAIN-ROLEPLAYING`*`NAME)])])]%r*[center(,78,-)]*
+
+@@ 'Top list' command; the selected helpfile(%0) is listed, with its contents including code and ANSI(so escape any code examples inside of it!). Checks to see if the selected helpfile even exists, returns the proper message if it does not. Also checks for sub-helpfiles(looks for the SUBNAME attribute), lists them if applicable.
+
+&HELP-LISTTOP-CMD #151=$+help *:@pemit %#= if([t(xget(#151,[lattr(#151/MAIN-*`%0)]))],+[center(,78,=)]+%r|[center(*<%bHelp:%b[xget(#151,[lattr(#151/MAIN-*`%0`NAME)])]%b>*,78,-)]|%r+[center(,78,=)]+%r%r[ufun(#151/[lattr(#151/MAIN-*`%0)])]%r%r[if(or[lattr(#151/SUB-*`%0`*`SUBNAME,\,)], +[center(,78,=)]}%rSub-helpfiles are available for this topic(listed below). You may view them by typing +help/<main> <sub>.%r%r[align(80,[map(#151/HELP-SUBLIST, [lattr(#151/SUB-*`%0`*`SUBNAME)])])]%r+[center(,78,=)]+,[ufun(#147/ERROR-FUNCTION)])],[ufun(#147/ERROR-FUNCTION)])
+
+@@ 'Sub list' command; pulls a sub-helpfile(%1) that's branched from the main one(%0). Listed with all contents including code and ANSI(again, escape any included code examples!). Checks to see if it even exists, returns an error if it doesn't. Does NOT support sub-sub helpfiles. Don't even try it. Just don't.
+
+&HELP-LISTSUB-CMD #151=$+help/* *:@pemit %#=if([t(xget(#151,[lattr(#151/SUB-*`%0`%1`SUBNAME)]))],+[center(,78,=)]+%r|[center(*<%bSubhelp:%b[xget(#151,[lattr(#151/SUB-*`%0`NAME)])]%b-%b[xget(#151,[lattr(#151/SUB-*`%0`%1`SUBNAME)])]%b>*,78,-)]|%r+[center(,78,=)]+%r%r[ufun(#151/[lattr(#151/SUB-*`%0`%1)])]%r%r+[center(,78,=)]+,)
+
+@@ 'Add main helpfile' command; first wildcard(%0) is the category(refer to your +help categories to see what you can put it under), second(%1) is the name of the helpfile. Third(%2) wildcard will be the contents of your helpfile itself. Checks wizard perms.
+
+&HELP-ADDMAIN-CMD #151=$+help/addmain */*=*:@pemit %#= if(hasflag(%#,WIZARD),[attrib_set(#151/MAIN-%0`%1,%2)][attrib_set(#151/MAIN-%0`%1`NAME,%1)][pemit(%#, <[ucstr(%1)]> Helpfile added to the %0 category!)],[pemit(%#,What do you think you are\, a wizard?)])
+
+@@ 'Add sub helpfile' command; first wildcard(%0) is the category, second(%1) is the main helpfile, third(%2) is the name of the new sub-file. Fourth(%3) is the contents of the sub-file.
+
+&HELP-ADDSUB-CMD #151=$+help/addsub */*/*=*:@pemit %#=if(hasflag(%#,WIZARD),[if(t(xget(#151,[lattr(#151/MAIN-%0`%1)])),[attrib_set(#151/SUB-%0`%1`%2,%3)][attrib_set(#151/SUB-%0`%1`%2`SUBNAME,%2)][pemit(%#, <[ucstr(%2)]> Subfile added to [capstr(%1)].)],[pemit(%#,What do you think you are\, a wizard?)])]
+
+@@ 'Delete main helpfile' command; first wildcard(%0) is the category you're deleting from, second(%1) is the helpfile name. Only use if you know you want to get rid of the file; it will NOT double check.
+
+&HELP-DELMAIN-CMD #151=$+help/delmain */*:@pemit %#=if(hasflag(%#,WIZARD),[wipe(#151/MAIN-%0`%1)][if(not(lattr(#151/MAIN-%0`%1)),pemit(%#,ERROR! Helpfile was not found.),pemit(%#,<[ucstr(%1)]> Helpfile deleted.))],<HELPSYS> [ufun(#147/ERROR-FUNCTION)])
+
+@@ 'Delete sub helpfile' command; first wildcard(%0) is the category you're deleting from, second(%1) is the main helpfile, third(%2) is the sub-file. Only use if you know you want to get tid of the file; it will NOT double check.
+
+&HELP-DELSUB-CMD #151=$+help/delsub */*/*:@pemit %#if(hasflag(%#,WIZARD),[wipe(#151/SUB-%0`%1`%2)][if(not(lattr(#151/SUB-%0`%1)),pemit(%#,ERROR! Helpfile was not found.),pemit(%#,<[ucstr(%2)]> Helpfile deleted.))],<HELPSYS> [ufun(#147/ERROR-FUNCTION)])
+
+@@ Begin staff help command
+
+@@ Passed into from help index, gets file name, provides spacing between each listed help topic
+ 
+&SHELP-INDEXLIST #151=xget(#151, %0)%b%b%b%b%b
+
+@@ Passed into from subhelp list, gets file name, provides spacing between each listed subfile
+
+&SHELP-SUBLIST #151=xget(#151, %0)%b%b%b%b%b
+
+@@ 'Index' command; categories are manually added via center() code currently. Fetches every helpfile in the category's attribute tree(looks for the NAME attribute set by the add* commands) and lists it under the proper category.
+
+&SHELP-INDEX-CMD #151=$+shelp:@pemit %#= if(orlflags(%#,WIZARD ROYALTY JUDGE),/[center(,78,=)]\\%r|[center(*<%b[mudname()] Staff Help Files%b>*,78,-)]|%r\\[center(,78,=)]/%r%b%b%b%b[center(*>%bBuilder Help%b<*,72,-)]%r[align(80,[map(#151/SHELP-INDEXLIST, [lattr(#151/STAFFMAIN-BUILDER`*`SNAME)])])]%r*[center(,78,-)]*,You can't do that!)
+
+@@ 'Top list' command; the selected helpfile(%0) is listed, with its contents including code and ANSI(so escape any code examples inside of it!). Checks to see if the selected helpfile even exists, returns the proper message if it does not. Also checks for sub-helpfiles(looks for the SUBNAME attribute), lists them if applicable.
+
+&SHELP-LISTTOP-CMD #151=$+shelp *:@pemit %#= if(orlflags(%#,WIZARD ROYALTY JUDGE),[if([t(xget(#151,[lattr(#151/STAFFMAIN-*`%0)]))],+[center(,78,=)]+%r|[center(*<%bStaff Help:%b[xget(#151,[lattr(#151/STAFFMAIN-*`%0`SNAME)])]%b>*,78,-)]|%r+[center(,78,=)]+%r%r[ufun(#151/[lattr(#151/STAFFMAIN-*`%0)])]%r[if(t(xget(#151,[lattr(#151/STAFFSUB-*`%0`*`S-SUBNAME)])), +[center(,78,=)]}%rSub-helpfiles are available for this topic(listed below). You may view them by typing +shelp <main>/<sub> .%r%r[align(80,[map(#151/SHELP-SUBLIST, [lattr(#151/STAFFSUB-*`%0`*`S-SUBNAME)])])])]%r+[center(,78,=)]+,[if(not(%0),,[pemit(%#,<HELPSYS> [first(shuffle(xget(#155,HELP-ERRORLIST),|),|)])])], You can't do that!)
+
+@@ 'Sub list' command; pulls a sub-helpfile(%1) that's branched from the main one(%0). Listed with all contents including code and ANSI(again, escape any included code examples!). Checks to see if it even exists, returns an error if it doesn't. Does NOT support sub-sub helpfiles. Don't even try it. Just don't.
+
+&SHELP-LISTSUB-CMD #151=$+shelp */*:@pemit %#=if(orlflags(%#,WIZARD ROYALTY JUDGE),[if([t(xget(#151,[lattr(#151/STAFFSUB-*`%0`%1`S-SUBNAME)]))],+[center(,78,=)]+%r|[center(*<%bSubhelp:%b[xget(#151,[lattr(#151/STAFFSUB-*`%0`SNAME)])]%b-%b[xget(#151,[lattr(#151/STAFFSUB-*`%0`%1`S-SUBNAME)])]%b>*,78,-)]|%r+[center(,78,=)]+%r%r[ufun(#151/[lattr(#151/STAFFSUB-*`%0`%1)])]%r%r+[center(,78,=)]+,[pemit(%#,<HELPSYS> [first(shuffle(xget(#155,HELP-ERRORLIST),|),|)])],You can't do that!)
+
+@@ 'Add main helpfile' command; first wildcard(%0) is the category(refer to your +help categories to see what you can put it under), second(%1) is the name of the helpfile. Third(%2) wildcard will be the contents of your helpfile itself. Checks wizard perms.
+
+&SHELP-ADDMAIN-CMD #151=$+shelp/addmain */*=*:@pemit %#= if(hasflag(%#,WIZARD),[attrib_set(#151/STAFFMAIN-%0`%1,%2)][attrib_set(#151/STAFFMAIN-%0`%1`SNAME,%1)][pemit(%#, <[ucstr(%1)]> Helpfile added to the %0 category!)],[pemit(%#,What do you think you are\, a wizard?)])
+
+@@ 'Add sub helpfile' command; first wildcard(%0) is the category, second(%1) is the main helpfile, third(%2) is the name of the new sub-file. Fourth(%3) is the contents of the sub-file.
+
+&SHELP-ADDSUB-CMD #151=$+shelp/addsub */*/*=*:@pemit %#=if(hasflag(%#,WIZARD),[if(t(xget(#151,[lattr(#151/STAFFMAIN-%0`%1)])),[attrib_set(#151/STAFFSUB-%0`%1`%2,%3)][attrib_set(#151/STAFFSUB-%0`%1`%2`S-SUBNAME,%2)][pemit(%#, <[ucstr(%2)]> Subfile added to [capstr(%1)].)],[pemit(%#,What do you think you are\, a wizard?)])]
+
+@@ 'Delete main helpfile' command; first wildcard(%0) is the category you're deleting from, second(%1) is the helpfile name. Only use if you know you want to get rid of the file; it will NOT double check.
+
+&SHELP-DELMAIN-CMD #151=$+shelp/delmain */*:@pemit %#=if(hasflag(%#,WIZARD),[wipe(#151/STAFFMAIN-%0`%1)][if(not(lattr(#151/STAFFMAIN-%0`%1)),pemit(%#,ERROR! Helpfile was not found.),pemit(%#,<[ucstr(%1)]> Helpfile deleted.))],Herp)
+
+@@ 'Delete sub helpfile' command; first wildcard(%0) is the category you're deleting from, second(%1) is the main helpfile, third(%2) is the sub-file. Only use if you know you want to get rid of the file; it will NOT double check.
+
+&SHELP-DELSUB-CMD #151=$+shelp/delsub */*/*:@pemit %#if(hasflag(%#,WIZARD),[wipe(#151/STAFFSUB-%0`%1`%2)][if(not(lattr(#151/STAFFSUB-%0`%1)),pemit(%#,ERROR! Helpfile was not found.),pemit(%#,<[ucstr(%2)]> Helpfile deleted.))],Derp)

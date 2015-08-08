@@ -1,0 +1,176 @@
+ lwho() mwho() align() iter() time() idle() conn() convsecs() etimefmt() ansi() loc() zone() name()
+ 
+ LWHO()
+  lwho([<viewer>[, <status>]])
+  lwhoid([<viewer>[, <status>]])
+
+  lwho() returns a list of the dbref numbers for all currently-connected
+  players. When mortals use this function, the dbref numbers of hidden
+  wizards or royalty do NOT appear on the dbref list.
+
+  If a <viewer> is given, and used by a See_All object, lwho() returns the
+  output of lwho() from <viewer>'s point of view.
+
+  <status> can be used to include "#-1" dbrefs for unconnected ports, and
+  must be one of "all", "online" or "offline". It is primarily useful when
+  using a <status> with lports(), to make the dbrefs and ports match up.
+  Only See_All players can see offline dbrefs.
+
+  lwhoid() returns a list of objid's instead.
+
+See also: mwho(), nwho(), xwho()
+
+MWHO()
+  mwho()
+  mwhoid()
+
+  mwho() returns a list of the dbref numbers for all current-connected,
+  non-hidden players. It's exactly the same as lwho() used by a mortal,
+  and is suitable for use on privileged global objects who need an
+  unprivileged who-list. In some cases, lwho(<viewer>) may be preferable
+  to mwho(), as it includes hidden players for <viewer>s who can see them.
+
+  mwhoid() returns a list of objids instead.
+
+See also: lwho(), nwho()
+ALIGN()
+  align(<widths>, <col>[, ... , <colN>[, <filler>[, <colsep>[, <rowsep>]]]])
+  lalign(<widths>, <colList>[, <delim>[, <filler>[, <colsep>[, <rowsep>]]]])
+
+  Creates columns of text, each column designated by <col> arguments.
+  Each <col> is individually wrapped inside its own column, allowing
+  for easy creation of book pages, newsletters, or the like. In lalign(),
+  <colList> is a <delim>-separated list of the columns.
+
+  <widths> is a space-separated list of column widths. '10 10 10' for
+  the widths argument specifies that there are 3 columns, each 10
+  spaces wide. You can alter the behavior of a column in multiple ways.
+  (Check 'help align2' for more details)
+
+  <filler> is a single character that, if given, is the character used
+  to fill empty columns and remaining spaces. <colsep>, if given, is
+  inserted between every column, on every row. <rowsep>, if given, is
+  inserted between every line. By default, <filler> and <colsep> are a
+  space, and <rowsep> is a newline.
+
+  Continued in 'help align2'
+  
+  ALIGN2
+  You can modify column behavior within align(). The basic format is:
+
+  [justification]Width[runout][(ansi)]
+
+  Justification: Placing one of these characters before the width alters
+  the spacing for this column. (e.g: <30)
+    < Left-justify       - Center-justify        > Right-justify
+    _ Full-justify.      = Paragraph-justify.
+
+  Other options: Adding these after the width will alter the column's
+    behaviour in some situtations
+    . Repeat for as long as there is non-repeating text in another column.
+    ` Merge with the column on the left when it runs out of text.
+    ' Merge with the column on the right when it runs out of text.
+    $ nofill: Don't use filler after the text. If this is combined with
+      merge-left, the column to its left inherits the 'nofill' when merged.
+
+  Ansi: Place ansi characters (as defined in 'help ansi()') within ()s to
+  define a column's ansi markup.
+
+  See 'help align3' for examples.
+See also: center(), ljust(), rjust(), table()
+
+ALIGN3
+  Examples:
+
+    > &line me=align(<5 10 20,([left(get(%0/sex),1)]),name(%0),name(loc(%0)))
+    > th iter(lwho(),u(line,##),%b,%r)
+      (M) Walker     Tree
+      (F) Jane Doe   Nowhere
+
+    > &haiku me = Alignment function,%rIt justifies your writing,%rBut the
+                  words still suck.%rLuke
+
+    > th [align(5 -40 5,,[repeat(-,40)]%r[u(haiku)]%r[repeat(-,40)],,%b,+)]
+
+         +----------------------------------------+
+         +          Alignment function,           +
+         +       It justifies your writing,       +
+         +       But the words still suck.        +
+         +                  Luke                  +
+         +----------------------------------------+
+
+  See 'help align4' for more examples.
+  
+  ALIGN4
+  > &dropcap me=%b_______%r|__%b%b%b__|%r%b%b%b|%b|%r%b%b%b|_|
+  > &story me=%r'was the night before Christmas, when all through the house%r
+              Not a creature was stirring, not even a mouse.%r
+              The stockings were hung by the chimney with care,%r
+              In hopes that St Nicholas soon would be there.
+  > th align(9'(ch) 68, u(dropcap), u(story)
+
+   _______
+  |__   __| 'was the night before Christmas, when all through the house
+     | |    Not a creature was stirring, not even a mouse.
+     |_|    The stockings were hung by the chimney with care,
+  In hopes that St Nicholas soon would be there.
+
+  The dropcap 'T' will be in ANSI cyan-highlight, and merges with the 'story'
+  column.
+
+  > th align(>15 60,Walker,Staff & Developer,x,x)
+  xxxxxxxxxWalkerxStaff & Developerxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+  > th align(>15 60$,Walker,Staff & Developer,x,x)
+  xxxxxxxxxWalkerxStaff & Developer
+  
+  ITER()
+  iter(<list>, <pattern>[, <delimiter>[, <output separator>]])
+
+  For each word in <list>, iter() evaluates <pattern> once, and returns a
+  list of the results of those evaluations. Words in <list> are separated
+  by <delimiter>, if given, and spaces if not. Words in the resulting list
+  are separated by the given <ouput separator>, or a space if no output
+  separator is given.
+
+  Prior to each evaluation, every occurrence of the string "##" in <pattern>
+  is replaced with the current word from <list>. However, because this
+  replacement occurs before evaluation, it cannot be used well in nested
+  iter()s, and should not be used on user input or untrusted <list>s, as the
+  word will be evaluated. Instead, you can use the %iX substitution, or the
+  itext() function. The substitution '%iL' refers to the outermost iter
+  of the current expression, and is intended to replace ##.
+
+  The string "#@" will be replaced with the position of the current word
+  in <list>. Like "##", the replacement occurs before substitution. Use
+  the inum() function for nested iter()s.
+
+  If you nest iter()s, ## and #@ refer to the first/outermost iter(). The
+  ilev() function can be used to get the current iter() nesting level.
+
+  See 'help iter2' for examples.
+See also: itext(), inum(), ilev(), ibreak(), map(), @dolist
+ITER2
+  Examples:
+    > say iter(This is a test string., strlen(%i0))
+    You say, "4 2 1 4 7"
+
+    > say iter(lnum(5), mul(add(%i0,#@),2))
+    You say, "2 6 10 14 18"
+
+    > say iter(lexits(here), name(%i0) (owned by [name(owner(%i0))]))
+    You say, "South (owned by Claudia) North (owned by Roy)"
+
+    > &STRLEN_FN me=strlen(%0)
+    > say iter(This is a test string., u(STRLEN_FN, %i0))
+    You say, "4 2 1 4 7"
+
+  Since this example just evaluates another attribute for each element of the
+  list, it can be done more efficiently using map():
+    > say map(strlen_fun, This is a test string.)
+
+    > say iter(lnum(3), %i0, ,%r)
+    You say, "0
+    1
+    2"
+
+  parse() is an alias for iter().

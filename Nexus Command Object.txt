@@ -1,0 +1,9 @@
+@@
+@@ +Nexus command
+@@ Because why the fuck not
+@@
+@@ By Violeta Nascha aka Cipher
+
+@@ +nexus command... assumes nexus DBref is as listed otherwise adjust to taste. Set on Nexus Object, in this case DBref #154
+
+&nexus-cmd #154=$+nexus:@pemit %#=[if(strmatch(#153,[room(%#)]),You're already in the Nexus!,[pemit(%#,You close your eyes and will yourself to travel back to a familiar plane of existence\, safe from the troubles of this world. You fade from this plane...)][tel(%#, #153)][pemit(%#,And before you know it\, the familiar shapes of the Nexus greet your eyes once more.)])]
